@@ -1,6 +1,6 @@
--- Schema do demo de peças descontinuadas (piloto IE / RHD)
--- Mesmas tabelas do desenho original, com uma coluna nova em parts: supply_status
--- (se a peça ainda é vendida pelo fabricante, já foi confirmada como descontinuada, ou ainda não foi checada).
+-- Schema for the discontinued-parts demo (IE / RHD pilot)
+-- Same tables as the original design, plus one new column in parts: supply_status
+-- (whether the part is still sold by the manufacturer, confirmed as discontinued, or not checked yet).
 
 PRAGMA foreign_keys = ON;
 

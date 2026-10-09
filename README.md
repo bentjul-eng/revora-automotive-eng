@@ -1,57 +1,57 @@
-# Revora: demo de peças de acabamento descontinuadas (piloto IE / RHD)
+# Revora: discontinued trim parts demo (IE / RHD pilot)
 
-Banco SQLite pequeno + uma página de consulta que funciona offline. Feito para mostrar o conceito na Auto Trade EXPO (Dublin, 10-11 out 2026).
+A small SQLite database plus a lookup page that works offline. Built to show the concept at the Auto Trade EXPO (Dublin, 10-11 Oct 2026).
 
-A ideia do piloto: peças simples, cujas **dimensões já estão publicadas**, para modelar sem precisar escanear.
+The pilot idea: simple parts whose **dimensions are already published**, so they can be modelled without scanning.
 
-## Arquivos
+## Files
 
-| Arquivo | O que é |
+| File | What it is |
 |---|---|
-| `index.html` | A página de consulta. Um arquivo só, sem internet. Abre no celular/tablet. |
-| `pecas_ie.db` | O banco SQLite (abre no DBeaver). |
-| `schema.sql` | Tabelas. Mesmo desenho do schema original, com `supply_status` em `parts` e o nível de confiança `aftermarket_catalogue`. |
-| `seed.sql` | Os dados do piloto: 4 modelos, 10 peças, com a fonte de cada dimensão e de cada compatibilidade. |
-| `template.html` | Molde da página. `build.py` injeta os dados do banco nele. |
-| `build.py` | Recria o `.db` e o `index.html`. Só biblioteca padrão do Python. |
+| `index.html` | The lookup page. A single file, no internet needed. Opens on a phone or tablet. |
+| `pecas_ie.db` | The SQLite database (opens in DBeaver). |
+| `schema.sql` | Tables. Same design as the original schema, with `supply_status` in `parts` and the `aftermarket_catalogue` confidence level. |
+| `seed.sql` | The pilot data: 4 models, 10 parts, with the source of every dimension and every fitment. |
+| `template.html` | Page template. `build.py` injects the database data into it. |
+| `build.py` | Rebuilds the `.db` and `index.html`. Python standard library only. |
 
-## Na feira
+## At the fair
 
-1. Copie `index.html` para o tablet/celular e abra pelo navegador (funciona em modo avião).
-2. Teste hoje à noite no aparelho que vai levar. Os testes que fiz foram automatizados, não em um tablet real.
-3. Use a página como gancho para o roteiro: "você já procurou algum desses clipes e não achou?".
+1. Copy `index.html` to the tablet or phone and open it in the browser (works in airplane mode).
+2. Test it the night before on the device you will bring. So far it has only been tested automatically, not on a real tablet.
+3. Use the page as a hook for the interview script: "have you ever looked for one of these clips and not found it?".
 
-## Regenerar depois de mudar os dados
+## Rebuild after changing the data
 
 ```bash
 python3 build.py
 ```
 
-Para adicionar uma peça: edite `seed.sql` (`parts`, `part_vehicle_compatibility`, `sources` e `part_dimensions`) e rode o build. A página mostra as medidas de `part_dimensions` automaticamente.
+To add a part: edit `seed.sql` (`parts`, `part_vehicle_compatibility`, `sources` and `part_dimensions`) and run the build. The page shows the measurements from `part_dimensions` automatically.
 
-## Abrir no DBeaver
+## Open in DBeaver
 
 New Database Connection > SQLite > Path: `pecas_ie.db`.
 
-## Publicar uma versão online (opcional)
+## Publish an online version (optional)
 
-Como o repositório é público, dá para servir o `index.html` pelo GitHub Pages: Settings > Pages > Source: "Deploy from a branch" > branch `main`, pasta `/ (root)`. O endereço fica `https://bentjul-eng.github.io/revora-automotive-eng/` depois de alguns minutos. Serve para o QR code, mas na feira use a cópia local, porque o wifi pode falhar.
+Since the repository is public, `index.html` can be served with GitHub Pages: Settings > Pages > Source: "Deploy from a branch" > branch `main`, folder `/ (root)`. The address will be `https://bentjul-eng.github.io/revora-automotive-eng/` after a few minutes. Useful for a QR code, but use the local copy at the fair, because the wifi may fail.
 
-## De onde vêm os dados
+## Where the data comes from
 
-- **Dimensões**: catálogos de fornecedores (Lawson, Kimball Midwest, Kent Automotive), que trazem tabelas completas por número OEM; anúncios do eBay/Walmart, que são aproximados; e um post de fórum de dono de Avensis. Cada medida guarda a fonte e o tipo (`seller_listing_approx`, `supplier_catalogue`, `forum_post`).
-- **Compatibilidade**: `aftermarket_catalogue` quando um catálogo de peças cita o modelo; `community_reported` quando um anúncio ou fórum cita; `inferred` quando só se deduz.
-- **Atenção**: Lawson, Kimball e Kent são catálogos **dos EUA** e citam anos-modelo americanos. O carro vendido na Irlanda (RHD) pode usar outro clipe. Nenhuma compatibilidade foi verificada em carro irlandês.
-- `supply_status` está em `unverified` para todas. Todas ainda aparecem à venda como reposição, então a descontinuação é uma hipótese a testar.
-- Arquivos 3D: nenhum foi feito ainda.
-- `design_right_status` está `unknown` em todas. É uma questão jurídica, não deve ser preenchida sem revisão.
-- O Yaris está no demo pelos dados, mas não verifiquei o volume dele na frota irlandesa. Corolla, Avensis e Focus foram campeões de venda na Irlanda em 2005-2009.
+- **Dimensions**: supplier catalogues (Lawson, Kimball Midwest, Kent Automotive), which have full tables per OEM number; eBay/Walmart listings, which are approximate; and a forum post by an Avensis owner. Each measurement stores its source and type (`seller_listing_approx`, `supplier_catalogue`, `forum_post`).
+- **Fitment**: `aftermarket_catalogue` when a parts catalogue names the model; `community_reported` when a listing or forum names it; `inferred` when it is only deduced.
+- **Caution**: Lawson, Kimball and Kent are **US** catalogues and list US model years. The car sold in Ireland (RHD) may use a different clip. No fitment has been verified on an Irish car.
+- `supply_status` is `unverified` for all parts. They all still show up for sale as replacements, so discontinuation is a hypothesis to test.
+- 3D files: none made yet.
+- `design_right_status` is `unknown` for all parts. It is a legal question and should not be filled in without review.
+- The Yaris is in the demo because of the data, but its volume in the Irish fleet has not been checked. The Focus was Ireland's best-selling car in 2005-2009; the Corolla and Avensis were in the top three in 2007 and 2008.
 
-## Candidatas deixadas de fora
+## Candidates left out
 
-Sem dimensões publicadas, ou de forma complexa demais. Só entram se houver CAD ou scan:
+No published dimensions, or a shape too complex. They only go in with a CAD file or a scan:
 
 - Focus Mk2: `4M51-16613-AC`, `4M51-A24049-ACW`, `4M51-22642-ADW`, `3M51-226A37`
-- Corolla E120/E150: `87945-05901`, `87915-05901` (capas de retrovisor), `90467-10167`, `90467-06049-22`
+- Corolla E120/E150: `87945-05901`, `87915-05901` (mirror covers), `90467-10167`, `90467-06049-22`
 
-Sem compatibilidade confirmada com nenhum dos modelos: `90467-07211` (clipe de grade, só a cabeça tem medida).
+No confirmed fitment on any of the models: `90467-07211` (grille clip, only the head has a measurement).

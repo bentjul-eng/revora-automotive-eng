@@ -1,7 +1,7 @@
--- Dataset do piloto v3: Toyota (Corolla, Avensis, Yaris) + 1 peça do Focus.
--- Os clipes Toyota 90467-xxxxx são compartilhados entre modelos e têm tabelas de dimensões
--- em catálogos de fornecedores (Lawson, Kimball Midwest, Kent Automotive).
--- supply_status = 'unverified' em todas: todas ainda aparecem à venda como reposição.
+-- Pilot dataset v3: Toyota (Corolla, Avensis, Yaris) + 1 Focus part.
+-- The Toyota 90467-xxxxx clips are shared across models and have dimension tables
+-- in supplier catalogues (Lawson, Kimball Midwest, Kent Automotive).
+-- supply_status = 'unverified' for all: every one still shows up for sale as a replacement.
 
 INSERT INTO manufacturers (manufacturer_id, name, country, is_oem) VALUES
   (1, 'Ford',   'US', 1),

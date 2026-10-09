@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Cria pecas_ie.db (schema.sql + seed.sql) e gera index.html (template.html + dados do banco).
+"""Builds pecas_ie.db (schema.sql + seed.sql) and generates index.html (template.html + data from the database).
 
-Uso:  python3 build.py
-Só usa a biblioteca padrão do Python.
+Usage:  python3 build.py
+Uses only the Python standard library.
 """
 import json
 import sqlite3
@@ -23,7 +23,7 @@ def build_db() -> sqlite3.Connection:
     con.execute("PRAGMA foreign_keys = ON")
     problems = con.execute("PRAGMA foreign_key_check").fetchall()
     if problems:
-        raise SystemExit(f"foreign_key_check falhou: {[tuple(p) for p in problems]}")
+        raise SystemExit(f"foreign_key_check failed: {[tuple(p) for p in problems]}")
     con.commit()
     return con
 
@@ -105,6 +105,6 @@ if __name__ == "__main__":
     connection = build_db()
     exported = export_data(connection)
     build_html(exported)
-    print(f"{DB_PATH.name}: {len(exported['vehicles'])} veículos, {len(exported['parts'])} peças")
-    print(f"{HTML_PATH.name}: gerado")
+    print(f"{DB_PATH.name}: {len(exported['vehicles'])} vehicles, {len(exported['parts'])} parts")
+    print(f"{HTML_PATH.name}: generated")
     connection.close()
