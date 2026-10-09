@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Discontinued trim parts: fitment lookup</title>
+<style>
+  :root {
+    --bg: #E8ECEF;
+    --surface: #FFFFFF;
+    --ink: #15212B;
+    --muted: #4F5E6A;
+    --line: #C5CED6;
+    --accent: #0E5A8A;
+    --accent-ink: #FFFFFF;
+    --tag: #FFD83D;
+    --tag-ink: #15212B;
+    --warn-bg: #FFF1CC;
+    --warn-ink: #5C4300;
+    --info-bg: #E1ECF5;
+    --info-ink: #12415F;
+    --ok-bg: #DDF1E3;
+    --ok-ink: #14502A;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10181F;
+      --surface: #18232C;
+      --ink: #EAF0F4;
+      --muted: #A3B1BC;
+      --line: #2C3B47;
+      --accent: #6DB6E8;
+      --accent-ink: #0B1A24;
+      --warn-bg: #3B3010;
+      --warn-ink: #FFE08A;
+      --info-bg: #183246;
+      --info-ink: #B8DBF2;
+      --ok-bg: #16361F;
+      --ok-ink: #A9E3BB;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 1rem;
+    line-height: 1.45;
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+  }
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 1.25rem 1rem 2.5rem; }
+
+  header h1 { font-size: 1.75rem; line-height: 1.15; letter-spacing: -0.01em; margin: 0 0 .35rem; }
+  header p { margin: 0; color: var(--muted); max-width: 38rem; }
+  .pilot { margin-top: .9rem; font-size: .9rem; color: var(--muted); border-left: 4px solid var(--tag); padding-left: .7rem; }
+
+  .finder { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-top: 1.25rem; }
+  .finder h2 { font-size: 1rem; margin: 0 0 .55rem; }
+  .finder h2 + .cars { margin-bottom: 1.1rem; }
+  .cars { display: flex; flex-wrap: wrap; gap: .6rem; }
+  .car-btn {
+    font: inherit; text-align: left; cursor: pointer;
+    min-height: 3.25rem; padding: .55rem .9rem;
+    background: var(--surface); color: var(--ink);
+    border: 2px solid var(--line); border-radius: 8px;
+    flex: 1 1 14rem;
+  }
+  .car-btn strong { display: block; font-size: 1.05rem; }
+  .car-btn span { color: var(--muted); font-size: .9rem; }
+  .car-btn[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+  .car-btn[aria-pressed="true"] span { color: inherit; opacity: .9; }
+
+  .search { width: 100%; font: inherit; font-size: 1.1rem; min-height: 3.25rem; padding: .6rem .8rem; color: var(--ink); background: var(--surface); border: 2px solid var(--line); border-radius: 8px; }
+  .search::placeholder { color: var(--muted); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .results-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: 1.6rem 0 .7rem; }
+  .results-head h2 { margin: 0; font-size: 1.15rem; }
+  .clear { font: inherit; color: var(--accent); background: none; border: 0; padding: .4rem 0; cursor: pointer; text-decoration: underline; }
+  .clear[hidden] { display: none; }
+
+  .part { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin-bottom: .9rem; overflow: hidden; display: grid; grid-template-columns: 1fr; }
+  .tag { background: var(--tag); color: var(--tag-ink); padding: .7rem 1rem; display: flex; flex-direction: column; justify-content: center; }
+  .tag small { font-size: .8rem; font-weight: 600; opacity: .8; }
+  .oem { font-family: var(--mono); font-weight: 700; font-size: 1.2rem; letter-spacing: .01em; overflow-wrap: anywhere; }
+  .body { padding: .9rem 1rem 1rem; min-width: 0; }
+  .body h3 { margin: 0 0 .5rem; font-size: 1.1rem; line-height: 1.25; }
+  .fit { margin: 0 0 .6rem; }
+  .fit .car { margin: 0; font-weight: 600; }
+  .fit .car span { font-weight: 400; color: var(--muted); }
+  .fit .pos { margin: 0; color: var(--muted); }
+  .badges { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .4rem; }
+  .badge { display: inline-block; font-size: .85rem; font-weight: 600; padding: .2rem .6rem; border-radius: 99px; }
+  .badge.reported { background: var(--warn-bg); color: var(--warn-ink); }
+  .badge.inferred { background: var(--info-bg); color: var(--info-ink); }
+  .badge.confirmed { background: var(--ok-bg); color: var(--ok-ink); }
+  .badge.reg { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
+
+  .status { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem; margin: .8rem 0 .2rem; padding: .6rem 0 0; border-top: 1px solid var(--line); }
+  .status div { min-width: 0; }
+  .status dt { font-size: .8rem; color: var(--muted); }
+  .status dd { margin: 0; font-weight: 600; font-size: .92rem; }
+
+  .dims { margin-top: .8rem; padding-top: .7rem; border-top: 1px solid var(--line); }
+  .dims h4 { margin: 0 0 .5rem; font-size: .95rem; }
+  .dims h4 small { font-weight: 400; color: var(--muted); font-size: .85rem; }
+  .dim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: .5rem; margin: 0; }
+  .dim-grid div { background: var(--bg); border-radius: 6px; padding: .45rem .65rem; }
+  .dim-grid dt { font-size: .8rem; color: var(--muted); }
+  .dim-grid dd { margin: 0; font-weight: 700; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+  .nodims { margin: .8rem 0 0; color: var(--muted); }
+
+  details { margin-top: .6rem; }
+  summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: .3rem 0; }
+  details p { margin: .4rem 0; color: var(--muted); font-size: .95rem; }
+  details a { color: var(--accent); overflow-wrap: anywhere; }
+
+  .empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 10px; padding: 1.25rem 1rem; color: var(--muted); }
+  footer { margin-top: 1.6rem; color: var(--muted); font-size: .9rem; max-width: 38rem; }
+
+  @media (min-width: 40rem) {
+    .wrap { padding-top: 2rem; }
+    header h1 { font-size: 2.1rem; }
+    .part { grid-template-columns: 12.5rem 1fr; }
+    .tag { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Discontinued trim parts</h1>
+    <p>Pick the car in front of you, or type an OEM number, to see which parts are on file and how sure we are they fit.</p>
+    <p class="pilot" id="pilot"></p>
+  </header>
+
+  <section class="finder" aria-label="Find a part">
+    <h2 id="cars-label">Car</h2>
+    <div class="cars" id="cars" role="group" aria-labelledby="cars-label"></div>
+    <label for="q"><h2>OEM number or part name</h2></label>
+    <input id="q" class="search" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="e.g. 87945-05901 or mirror cover">
+  </section>
+
+  <div class="results-head">
+    <h2 id="count" aria-live="polite"></h2>
+    <button class="clear" id="clear" type="button" hidden>Clear filters</button>
+  </div>
+  <div id="results"></div>
+
+  <footer>
+    Pilot data collected from public catalogues, listings and forums. Several catalogues are US ones and list US model years, so check a clip against the Irish-market car before relying on it. Nothing has been checked against the manufacturers' own catalogues yet. Only non-safety trim parts are in scope.
+  </footer>
+</div>
+
+<script>
+const DATA = __DATA__;
+
+const CONFIDENCE = {
+  oem_confirmed:      { cls: "confirmed", text: "Confirmed by the manufacturer" },
+  tecdoc_confirmed:   { cls: "confirmed", text: "Confirmed in TecDoc" },
+  aftermarket_catalogue: { cls: "reported", text: "Listed in a parts catalogue" },
+  community_reported: { cls: "reported",  text: "Seen in listings or forums" },
+  inferred:           { cls: "inferred",  text: "Inferred, not confirmed" }
+};
+const DIM_LABELS = {
+  clip_max_diameter: "Clip diameter (max)",
+  spring_length: "Spring length",
+  spring_outer_diameter: "Spring outer diameter",
+  spring_inner_diameter: "Spring inner diameter",
+  head_diameter: "Head diameter",
+  head_diameter_max: "Head diameter (max)",
+  stem_length: "Stem length",
+  stem_diameter: "Stem diameter",
+  stem_width: "Stem width",
+  stem_depth: "Stem depth",
+  head_diameter_top: "Top head diameter",
+  head_diameter_middle: "Middle head diameter",
+  head_diameter_bottom: "Bottom head diameter",
+  overall_length: "Overall length",
+  hole_diameter: "Hole diameter",
+  hole_diameter_max: "Hole diameter (max)"
+};
+const dimLabel = (t) => DIM_LABELS[t] || t.replace(/_/g, " ");
+const fmtMm = (v) => String(Number(v));
+const ORIGIN = {
+  seller_listing_approx: "from seller listings, approximate",
+  supplier_catalogue: "from a supplier catalogue",
+  forum_post: "from a forum post"
+};
+function dimOrigin(dims) {
+  const kinds = new Set(dims.map((d) => d.measured_by));
+  return kinds.size === 1 ? (ORIGIN[[...kinds][0]] || "from one source") : "from mixed sources";
+}
+const SUPPLY = {
+  unverified:    "Not checked yet",
+  available_oem: "Still sold new",
+  nla_confirmed: "No longer available"
+};
+
+const state = { vehicle: null, q: "" };
+const $ = (id) => document.getElementById(id);
+const norm = (s) => s.toUpperCase().replace(/[^A-Z0-9]/g, "");
+
+function el(tag, props, children) {
+  const node = document.createElement(tag);
+  if (props) for (const [k, v] of Object.entries(props)) {
+    if (k === "class") node.className = v;
+    else if (k === "text") node.textContent = v;
+    else node.setAttribute(k, v);
+  }
+  (children || []).forEach((c) => c && node.appendChild(c));
+  return node;
+}
+
+function vehicleLabel(v) { return v.make + " " + v.model + " " + v.generation; }
+function years(v) { return v.year_start + "\u2013" + v.year_end; }
+
+function renderCars() {
+  const box = $("cars");
+  box.textContent = "";
+  DATA.vehicles.forEach((v) => {
+    const btn = el("button", { class: "car-btn", type: "button", "aria-pressed": String(state.vehicle === v.vehicle_id) }, [
+      el("strong", { text: vehicleLabel(v) }),
+      el("span", { text: years(v) + ", " + (v.drive_side === "RHD" ? "right-hand drive" : "left-hand drive") })
+    ]);
+    btn.addEventListener("click", () => {
+      state.vehicle = state.vehicle === v.vehicle_id ? null : v.vehicle_id;
+      renderCars();
+      renderResults();
+    });
+    box.appendChild(btn);
+  });
+}
+
+function visibleFits(p) {
+  return p.fits.filter((f) => state.vehicle === null || f.vehicle_id === state.vehicle);
+}
+
+function matchesQuery(p) {
+  const q = state.q.trim();
+  if (!q) return true;
+  return norm(p.oem_part_number).includes(norm(q)) && norm(q).length > 0
+      || p.name.toLowerCase().includes(q.toLowerCase())
+      || (p.subcategory || "").toLowerCase().includes(q.toLowerCase());
+}
+
+function renderPart(p, fits) {
+  const vehicleById = Object.fromEntries(DATA.vehicles.map((v) => [v.vehicle_id, v]));
+
+  const fitBlocks = fits.map((f) => {
+    const v = vehicleById[f.vehicle_id];
+    const c = CONFIDENCE[f.confidence] || { cls: "inferred", text: f.confidence };
+    return el("div", { class: "fit" }, [
+      el("p", { class: "car" }, [document.createTextNode(vehicleLabel(v) + " "), el("span", { text: years(v) })]),
+      el("p", { class: "pos", text: f.fitment_position || "" }),
+      el("div", { class: "badges" }, [
+        el("span", { class: "badge " + c.cls, text: c.text }),
+        p.flags.length ? el("span", { class: "badge reg", text: "Regulatory check needed" }) : null
+      ])
+    ]);
+  });
+
+  const fileText = p.files.length ? p.files.map((f) => f.file_type).join(", ") : "Not made yet";
+
+  const dimBlock = p.dimensions.length
+    ? el("div", { class: "dims" }, [
+        el("h4", {}, [document.createTextNode("Dimensions "), el("small", { text: dimOrigin(p.dimensions) })]),
+        el("dl", { class: "dim-grid" }, p.dimensions.map((d) =>
+          el("div", {}, [el("dt", { text: dimLabel(d.dimension_type) }), el("dd", { text: fmtMm(d.value_mm) + " mm" })])
+        ))
+      ])
+    : el("p", { class: "nodims", text: "No dimensions on file yet." });
+
+  const noteBits = [];
+  if (p.notes) noteBits.push(el("p", { text: p.notes }));
+  p.flags.forEach((fl) => noteBits.push(el("p", { text: fl.regulation_ref + ": " + fl.notes })));
+  const seen = new Set();
+  fits.map((f) => ({ name: f.source_name, url: f.source_url }))
+    .concat(p.dimensions.map((d) => ({ name: d.source_name, url: d.source_url })))
+    .forEach((s) => {
+      if (s.url && !seen.has(s.url)) {
+        seen.add(s.url);
+        noteBits.push(el("p", {}, [
+          document.createTextNode("Source: "),
+          el("a", { href: s.url, target: "_blank", rel: "noopener", text: s.name })
+        ]));
+      }
+    });
+
+  return el("article", { class: "part" }, [
+    el("div", { class: "tag" }, [
+      el("small", { text: "OEM number" }),
+      el("span", { class: "oem", text: p.oem_part_number })
+    ]),
+    el("div", { class: "body" }, [
+      el("h3", { text: p.name }),
+      ...fitBlocks,
+      dimBlock,
+      el("dl", { class: "status" }, [
+        el("div", {}, [el("dt", { text: "3D file" }), el("dd", { text: fileText })]),
+        el("div", {}, [el("dt", { text: "Supply" }), el("dd", { text: SUPPLY[p.supply_status] || p.supply_status })])
+      ]),
+      noteBits.length ? el("details", {}, [el("summary", { text: "Notes and source" }), ...noteBits]) : null
+    ])
+  ]);
+}
+
+function renderResults() {
+  const box = $("results");
+  box.textContent = "";
+  const hits = [];
+  DATA.parts.forEach((p) => {
+    const fits = visibleFits(p);
+    if (fits.length && matchesQuery(p)) hits.push([p, fits]);
+  });
+
+  const filtering = state.vehicle !== null || state.q.trim() !== "";
+  $("clear").hidden = !filtering;
+  $("count").textContent = hits.length === 0
+    ? "No parts found"
+    : hits.length + (hits.length === 1 ? " part" : " parts") + (filtering ? " match" : " on file");
+
+  if (hits.length === 0) {
+    box.appendChild(el("div", { class: "empty", text: "Nothing on file for that yet. Tell us which part you can't find and we'll add it." }));
+    return;
+  }
+  hits.forEach(([p, fits]) => box.appendChild(renderPart(p, fits)));
+}
+
+$("q").addEventListener("input", (e) => { state.q = e.target.value; renderResults(); });
+$("clear").addEventListener("click", () => {
+  state.vehicle = null; state.q = ""; $("q").value = "";
+  renderCars(); renderResults();
+});
+
+$("pilot").textContent = "Pilot dataset: " + DATA.vehicles.length + " cars, " + DATA.parts.length +
+  " parts, Ireland (right-hand drive). Dimensions come from supplier catalogues, seller listings and forums. No 3D files are made yet.";
+renderCars();
+renderResults();
+</script>
+</body>
+</html>
