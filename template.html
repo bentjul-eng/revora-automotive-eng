@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <meta property="og:title" content="Revora Automotive Engineering">
-<meta property="og:description" content="Fitment data for the small parts that keep older cars on the road. Pilot: Ireland, right-hand drive.">
+<meta property="og:description" content="Build again. Build better. Fitment data for the small parts that keep older cars on the road. Pilot: Ireland, right-hand drive.">
 <meta property="og:image" content="https://bentjul-eng.github.io/revora-automotive-eng/assets/revora-logo.jpg">
 <link rel="icon" type="image/png" href="__ICON__">
 <link rel="apple-touch-icon" href="__ICON__">
@@ -55,7 +55,13 @@
 
   .caps { text-transform: uppercase; letter-spacing: .18em; font-size: .75rem; font-weight: 600; color: var(--muted); }
 
-  .logo { display: block; width: 100%; max-width: 30rem; height: auto; margin: 0 0 1.1rem -2%; mix-blend-mode: screen; }
+  .brand { text-align: center; margin: 0 0 1.6rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--line); }
+  .logo { display: block; width: 100%; max-width: 30rem; height: auto; margin: 0 auto; mix-blend-mode: screen; }
+  .slogan {
+    margin: .9rem 0 0; max-width: none; font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .22em;
+    padding-left: .22em; /* balances the trailing letter-spacing so the line looks centred */
+    color: #D9DDE0; background: var(--steel); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
   header h1 { font-size: 1.6rem; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 .6rem; }
   header p { margin: 0; color: var(--muted); max-width: 38rem; }
   header .lede { color: var(--ink); opacity: .88; }
@@ -131,6 +137,7 @@
   @media (min-width: 40rem) {
     .wrap { padding-top: 2rem; }
     header h1 { font-size: 2rem; }
+    .slogan { font-size: .95rem; letter-spacing: .32em; padding-left: .32em; }
     .part { grid-template-columns: 12.5rem 1fr; }
     .tag { padding: 1rem; }
   }
@@ -139,7 +146,10 @@
 <body>
 <div class="wrap">
   <header>
-    <img class="logo" src="__LOGO__" width="1280" height="427" alt="Revora Automotive Engineering">
+    <div class="brand">
+      <img class="logo" src="__LOGO__" width="1280" height="427" alt="Revora Automotive Engineering">
+      <p class="slogan">Build again. Build better.</p>
+    </div>
     <h1>The small parts that keep older cars on the road</h1>
     <p class="lede">Revora is building a fitment database for small, non-safety trim parts (clips, retainers, covers) on cars still driving on Irish roads. Each part is stored with its published dimensions, so it could be 3D printed when the original is hard to find.</p>
     <p class="how">Pick a car or type an OEM number. Every fit shows how confident the match is and where it came from.</p>
