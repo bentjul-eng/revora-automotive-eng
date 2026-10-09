@@ -3,49 +3,48 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Discontinued trim parts: fitment lookup</title>
+<title>Revora: trim parts fitment lookup</title>
+<meta name="description" content="Revora Automotive Engineering: fitment data and published dimensions for small, non-safety trim parts on cars still on Irish roads.">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<meta property="og:title" content="Revora Automotive Engineering">
+<meta property="og:description" content="Fitment data for the small parts that keep older cars on the road. Pilot: Ireland, right-hand drive.">
+<meta property="og:image" content="https://bentjul-eng.github.io/revora-automotive-eng/assets/revora-logo.jpg">
+<link rel="icon" type="image/png" href="__ICON__">
+<link rel="apple-touch-icon" href="__ICON__">
 <style>
+  /* Revora brand: black, brushed steel, white blueprint lines (from the logo). */
   :root {
-    --bg: #E8ECEF;
-    --surface: #FFFFFF;
-    --ink: #15212B;
-    --muted: #4F5E6A;
-    --line: #C5CED6;
-    --accent: #0E5A8A;
-    --accent-ink: #FFFFFF;
-    --tag: #FFD83D;
-    --tag-ink: #15212B;
-    --warn-bg: #FFF1CC;
-    --warn-ink: #5C4300;
-    --info-bg: #E1ECF5;
-    --info-ink: #12415F;
-    --ok-bg: #DDF1E3;
-    --ok-ink: #14502A;
+    color-scheme: dark;
+    --bg: #000000;
+    --grid: rgba(255, 255, 255, .045);
+    --surface: #0F1214;
+    --surface-2: #171B1E;
+    --ink: #F2F4F5;
+    --muted: #A9B0B5;
+    --line: #2A3035;
+    --accent: #D9DDE0;
+    --accent-ink: #0A0C0E;
+    --steel: linear-gradient(160deg, #7B8389 0%, #CDD2D5 34%, #F3F4F5 50%, #C3C8CC 66%, #868E94 100%);
+    --brush: repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px);
+    --warn-bg: #3B3010;
+    --warn-ink: #FFE08A;
+    --info-bg: #183246;
+    --info-ink: #B8DBF2;
+    --ok-bg: #16361F;
+    --ok-ink: #A9E3BB;
     --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #10181F;
-      --surface: #18232C;
-      --ink: #EAF0F4;
-      --muted: #A3B1BC;
-      --line: #2C3B47;
-      --accent: #6DB6E8;
-      --accent-ink: #0B1A24;
-      --warn-bg: #3B3010;
-      --warn-ink: #FFE08A;
-      --info-bg: #183246;
-      --info-ink: #B8DBF2;
-      --ok-bg: #16361F;
-      --ok-ink: #A9E3BB;
-    }
-  }
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; background: var(--bg); }
   body {
     margin: 0;
-    background: var(--bg);
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
     color: var(--ink);
     font-family: var(--sans);
     font-size: 1rem;
@@ -54,12 +53,18 @@
   }
   .wrap { max-width: 46rem; margin: 0 auto; padding: 1.25rem 1rem 2.5rem; }
 
-  header h1 { font-size: 1.75rem; line-height: 1.15; letter-spacing: -0.01em; margin: 0 0 .35rem; }
+  .caps { text-transform: uppercase; letter-spacing: .18em; font-size: .75rem; font-weight: 600; color: var(--muted); }
+
+  .logo { display: block; width: 100%; max-width: 30rem; height: auto; margin: 0 0 1.1rem -2%; mix-blend-mode: screen; }
+  header h1 { font-size: 1.6rem; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 .6rem; }
   header p { margin: 0; color: var(--muted); max-width: 38rem; }
-  .pilot { margin-top: .9rem; font-size: .9rem; color: var(--muted); border-left: 4px solid var(--tag); padding-left: .7rem; }
+  header .lede { color: var(--ink); opacity: .88; }
+  header .how { margin-top: .6rem; }
+  .pilot { display: flex; flex-wrap: wrap; gap: .4rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+  .pilot li { border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: .25rem .7rem; font-size: .85rem; color: var(--muted); }
 
   .finder { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-top: 1.25rem; }
-  .finder h2 { font-size: 1rem; margin: 0 0 .55rem; }
+  .finder h2 { margin: 0 0 .6rem; }
   .finder h2 + .cars { margin-bottom: 1.1rem; }
   .cars { display: flex; flex-wrap: wrap; gap: .6rem; }
   .car-btn {
@@ -71,21 +76,21 @@
   }
   .car-btn strong { display: block; font-size: 1.05rem; }
   .car-btn span { color: var(--muted); font-size: .9rem; }
-  .car-btn[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
-  .car-btn[aria-pressed="true"] span { color: inherit; opacity: .9; }
+  .car-btn[aria-pressed="true"] { border-color: #F3F4F5; background: var(--brush), var(--steel); color: var(--accent-ink); }
+  .car-btn[aria-pressed="true"] span { color: inherit; opacity: .8; }
 
   .search { width: 100%; font: inherit; font-size: 1.1rem; min-height: 3.25rem; padding: .6rem .8rem; color: var(--ink); background: var(--surface); border: 2px solid var(--line); border-radius: 8px; }
   .search::placeholder { color: var(--muted); }
   :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
   .results-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: 1.6rem 0 .7rem; }
-  .results-head h2 { margin: 0; font-size: 1.15rem; }
+  .results-head h2 { margin: 0; }
   .clear { font: inherit; color: var(--accent); background: none; border: 0; padding: .4rem 0; cursor: pointer; text-decoration: underline; }
   .clear[hidden] { display: none; }
 
   .part { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin-bottom: .9rem; overflow: hidden; display: grid; grid-template-columns: 1fr; }
-  .tag { background: var(--tag); color: var(--tag-ink); padding: .7rem 1rem; display: flex; flex-direction: column; justify-content: center; }
-  .tag small { font-size: .8rem; font-weight: 600; opacity: .8; }
+  .tag { background: var(--brush), var(--steel); color: var(--accent-ink); padding: .7rem 1rem; display: flex; flex-direction: column; justify-content: center; }
+  .tag small { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; opacity: .75; }
   .oem { font-family: var(--mono); font-weight: 700; font-size: 1.2rem; letter-spacing: .01em; overflow-wrap: anywhere; }
   .body { padding: .9rem 1rem 1rem; min-width: 0; }
   .body h3 { margin: 0 0 .5rem; font-size: 1.1rem; line-height: 1.25; }
@@ -106,10 +111,10 @@
   .status dd { margin: 0; font-weight: 600; font-size: .92rem; }
 
   .dims { margin-top: .8rem; padding-top: .7rem; border-top: 1px solid var(--line); }
-  .dims h4 { margin: 0 0 .5rem; font-size: .95rem; }
-  .dims h4 small { font-weight: 400; color: var(--muted); font-size: .85rem; }
+  .dims h4 { margin: 0 0 .5rem; font-size: .75rem; text-transform: uppercase; letter-spacing: .18em; }
+  .dims h4 small { font-weight: 400; color: var(--muted); font-size: .85rem; text-transform: none; letter-spacing: 0; }
   .dim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: .5rem; margin: 0; }
-  .dim-grid div { background: var(--bg); border-radius: 6px; padding: .45rem .65rem; }
+  .dim-grid div { background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: .45rem .65rem; }
   .dim-grid dt { font-size: .8rem; color: var(--muted); }
   .dim-grid dd { margin: 0; font-weight: 700; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
   .nodims { margin: .8rem 0 0; color: var(--muted); }
@@ -120,11 +125,12 @@
   details a { color: var(--accent); overflow-wrap: anywhere; }
 
   .empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 10px; padding: 1.25rem 1rem; color: var(--muted); }
-  footer { margin-top: 1.6rem; color: var(--muted); font-size: .9rem; max-width: 38rem; }
+  footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; max-width: 38rem; }
+  footer p { margin: .5rem 0 0; }
 
   @media (min-width: 40rem) {
     .wrap { padding-top: 2rem; }
-    header h1 { font-size: 2.1rem; }
+    header h1 { font-size: 2rem; }
     .part { grid-template-columns: 12.5rem 1fr; }
     .tag { padding: 1rem; }
   }
@@ -133,26 +139,29 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>Discontinued trim parts</h1>
-    <p>Pick the car in front of you, or type an OEM number, to see which parts are on file and how sure we are they fit.</p>
-    <p class="pilot" id="pilot"></p>
+    <img class="logo" src="__LOGO__" width="1280" height="427" alt="Revora Automotive Engineering">
+    <h1>The small parts that keep older cars on the road</h1>
+    <p class="lede">Revora is building a fitment database for small, non-safety trim parts (clips, retainers, covers) on cars still driving on Irish roads. Each part is stored with its published dimensions, so it could be 3D printed when the original is hard to find.</p>
+    <p class="how">Pick a car or type an OEM number. Every fit shows how confident the match is and where it came from.</p>
+    <ul class="pilot" id="pilot" aria-label="Pilot dataset"></ul>
   </header>
 
   <section class="finder" aria-label="Find a part">
-    <h2 id="cars-label">Car</h2>
+    <h2 class="caps" id="cars-label">Car</h2>
     <div class="cars" id="cars" role="group" aria-labelledby="cars-label"></div>
-    <label for="q"><h2>OEM number or part name</h2></label>
+    <label for="q"><h2 class="caps">OEM number or part name</h2></label>
     <input id="q" class="search" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="e.g. 90467-10183 or door trim">
   </section>
 
   <div class="results-head">
-    <h2 id="count" aria-live="polite"></h2>
+    <h2 class="caps" id="count" aria-live="polite"></h2>
     <button class="clear" id="clear" type="button" hidden>Clear filters</button>
   </div>
   <div id="results"></div>
 
   <footer>
-    Pilot data collected from public catalogues, listings and forums. Several catalogues are US ones and list US model years, so check a clip against the Irish-market car before relying on it. Nothing has been checked against the manufacturers' own catalogues yet. Only non-safety trim parts are in scope.
+    <div class="caps">Revora Automotive Engineering</div>
+    <p>Pilot data collected from public catalogues, listings and forums. Several catalogues are US ones and list US model years, so check a clip against the Irish-market car before relying on it. Nothing has been checked against the manufacturers' own catalogues yet. Only non-safety trim parts are in scope.</p>
   </footer>
 </div>
 
@@ -337,8 +346,8 @@ $("clear").addEventListener("click", () => {
   renderCars(); renderResults();
 });
 
-$("pilot").textContent = "Pilot dataset: " + DATA.vehicles.length + " cars, " + DATA.parts.length +
-  " parts, Ireland (right-hand drive). Dimensions come from supplier catalogues, seller listings and forums. No 3D files are made yet.";
+["Pilot dataset", DATA.vehicles.length + " cars", DATA.parts.length + " parts", "Ireland, right-hand drive", "No 3D files yet"]
+  .forEach((t) => $("pilot").appendChild(el("li", { text: t })));
 renderCars();
 renderResults();
 </script>

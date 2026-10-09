@@ -14,6 +14,7 @@ The pilot idea: simple parts whose **dimensions are already published**, so they
 | `seed.sql` | The pilot data: 4 models, 10 parts, with the source of every dimension and every fitment. |
 | `template.html` | Page template. `build.py` injects the database data into it. |
 | `build.py` | Rebuilds the `.db` and `index.html`. Python standard library only. |
+| `assets/` | Revora logo and icon. `build.py` inlines them into `index.html`, so the page stays a single offline file. |
 
 ## At the fair
 

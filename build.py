@@ -4,6 +4,7 @@
 Usage:  python3 build.py
 Uses only the Python standard library.
 """
+import base64
 import json
 import sqlite3
 from pathlib import Path
@@ -95,10 +96,20 @@ def export_data(con: sqlite3.Connection) -> dict:
     return {"vehicles": vehicles, "parts": parts}
 
 
+def data_uri(path: Path, mime: str) -> str:
+    # Images are inlined so index.html stays a single file that works offline.
+    return f"data:{mime};base64," + base64.b64encode(path.read_bytes()).decode("ascii")
+
+
 def build_html(data: dict) -> None:
     template = (ROOT / "template.html").read_text(encoding="utf-8")
     payload = json.dumps(data, ensure_ascii=False, indent=2).replace("</", "<\\/")
-    HTML_PATH.write_text(template.replace("__DATA__", payload), encoding="utf-8")
+    html = (
+        template.replace("__LOGO__", data_uri(ROOT / "assets" / "revora-logo.jpg", "image/jpeg"))
+        .replace("__ICON__", data_uri(ROOT / "assets" / "revora-icon.png", "image/png"))
+        .replace("__DATA__", payload)
+    )
+    HTML_PATH.write_text(html, encoding="utf-8")
 
 
 if __name__ == "__main__":
