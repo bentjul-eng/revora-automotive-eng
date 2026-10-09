@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# revora-automotive-eng
-# revora-automotive-eng
-=======
 # Revora: demo de peças de acabamento descontinuadas (piloto IE / RHD)
 
 Banco SQLite pequeno + uma página de consulta que funciona offline. Feito para mostrar o conceito na Auto Trade EXPO (Dublin, 10-11 out 2026).
@@ -59,4 +55,3 @@ Sem dimensões publicadas, ou de forma complexa demais. Só entram se houver CAD
 - Corolla E120/E150: `87945-05901`, `87915-05901` (capas de retrovisor), `90467-10167`, `90467-06049-22`
 
 Sem compatibilidade confirmada com nenhum dos modelos: `90467-07211` (clipe de grade, só a cabeça tem medida).
->>>>>>> 6575494 (Add fitment demo: Toyota pilot with dimensions (IE/RHD))
